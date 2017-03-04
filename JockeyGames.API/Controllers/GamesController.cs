@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using JockeyGames.API.Models;
+using JockeyGames.Models.Shared;
+using JockeyGames.Models.DTOs;
 using JockeyGames.Models.PingPong;
 
 namespace JockeyGames.API.Controllers
@@ -19,39 +21,79 @@ namespace JockeyGames.API.Controllers
         private JockeyGamesAPIContext db = new JockeyGamesAPIContext();
 
         // GET: api/Games
-        public IQueryable<Game> GetGames()
+        public IQueryable<GameDTO> GetGames()
         {
+            List<int> gameIds = (from g in db.Games
+                                 select g.Id).ToList();
+            
             return db.Games;
         }
 
         // GET: api/Games/5
-        [ResponseType(typeof(Game))]
-        public async Task<IHttpActionResult> GetGame(int id)
+        [ResponseType(typeof(GameDTO))]
+        public IHttpActionResult GetGame(int id)
         {
-            Game game = await db.Games.FindAsync(id);
-            if (game == null)
+            var query = (from g in db.Games
+                         where g.Id == id
+                         select new GameDTO
+                         {
+                             Id = g.Id
+                         });
+
+            if (query == null)
             {
                 return NotFound();
             }
+
+            GameDTO game = query.First();
+
+            int matchId = db.Games.Where(g => g.Id == id).Select(g => g.Match.Id).First();
+            Match match = db.Matches.Where(m => m.Id == matchId).First();
+
+            //int tournamentId = db.Matches.Where(m => m.)
+            //Tournament tournament = db.Tournaments.Where(t => t.Id == )
+            List<PlayerGame> playerGames = db.PlayerGames.Where(p => p.GameId == game.Id).ToList();
+
+            game.PlayerGames = new List<PlayerGameDTO>();
+            foreach (PlayerGame pg in playerGames)
+            {
+                PlayerDTO playerDTO = new PlayerDTO()
+                {
+                    Id = pg.PlayerId,
+                    Name = pg.Player.Name
+                };
+
+                game.PlayerGames.Add(new PlayerGameDTO()
+                {
+                    Score = pg.Score,
+                    Player = playerDTO
+                });
+            }
+
+            MatchDTO matchDTO = new MatchDTO()
+            {
+                Id = match.Id,
+                DateTime = match.DateTime
+            };
 
             return Ok(game);
         }
 
         // PUT: api/Games/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutGame(int id, Game game)
+        public async Task<IHttpActionResult> PutGame(int id, GameDTO gameDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != game.Id)
+            if (id != gameDTO.Id)
             {
                 return BadRequest();
             }
 
-            db.Entry(game).State = EntityState.Modified;
+            db.Entry(gameDTO).State = EntityState.Modified;
 
             try
             {
