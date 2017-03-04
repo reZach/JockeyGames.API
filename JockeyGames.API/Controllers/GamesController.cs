@@ -6,7 +6,6 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using JockeyGames.API.Models;
@@ -18,17 +17,17 @@ namespace JockeyGames.API.Controllers
     {
         private JockeyGamesAPIContext db = new JockeyGamesAPIContext();
 
-        // GET: api/Games
+        // GET: api/Games1
         public IQueryable<Game> GetGames()
         {
             return db.Games;
         }
 
-        // GET: api/Games/5
+        // GET: api/Games1/5
         [ResponseType(typeof(Game))]
-        public async Task<IHttpActionResult> GetGame(int id)
+        public IHttpActionResult GetGame(int id)
         {
-            Game game = await db.Games.FindAsync(id);
+            Game game = db.Games.Find(id);
             if (game == null)
             {
                 return NotFound();
@@ -37,9 +36,9 @@ namespace JockeyGames.API.Controllers
             return Ok(game);
         }
 
-        // PUT: api/Games/5
+        // PUT: api/Games1/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutGame(int id, Game game)
+        public IHttpActionResult PutGame(int id, Game game)
         {
             if (!ModelState.IsValid)
             {
@@ -55,7 +54,7 @@ namespace JockeyGames.API.Controllers
 
             try
             {
-                await db.SaveChangesAsync();
+                db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -72,9 +71,9 @@ namespace JockeyGames.API.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Games
+        // POST: api/Games1
         [ResponseType(typeof(Game))]
-        public async Task<IHttpActionResult> PostGame(Game game)
+        public IHttpActionResult PostGame(Game game)
         {
             if (!ModelState.IsValid)
             {
@@ -82,23 +81,23 @@ namespace JockeyGames.API.Controllers
             }
 
             db.Games.Add(game);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
 
             return CreatedAtRoute("DefaultApi", new { id = game.Id }, game);
         }
 
-        // DELETE: api/Games/5
+        // DELETE: api/Games1/5
         [ResponseType(typeof(Game))]
-        public async Task<IHttpActionResult> DeleteGame(int id)
+        public IHttpActionResult DeleteGame(int id)
         {
-            Game game = await db.Games.FindAsync(id);
+            Game game = db.Games.Find(id);
             if (game == null)
             {
                 return NotFound();
             }
 
             db.Games.Remove(game);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
 
             return Ok(game);
         }

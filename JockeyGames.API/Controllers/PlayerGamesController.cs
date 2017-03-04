@@ -6,7 +6,6 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using JockeyGames.API.Models;
@@ -18,17 +17,17 @@ namespace JockeyGames.API.Controllers
     {
         private JockeyGamesAPIContext db = new JockeyGamesAPIContext();
 
-        // GET: api/PlayerGames
+        // GET: api/PlayerGames1
         public IQueryable<PlayerGame> GetPlayerGames()
         {
             return db.PlayerGames;
         }
 
-        // GET: api/PlayerGames/5
+        // GET: api/PlayerGames1/5
         [ResponseType(typeof(PlayerGame))]
-        public async Task<IHttpActionResult> GetPlayerGame(int id)
+        public IHttpActionResult GetPlayerGame(int id)
         {
-            PlayerGame playerGame = await db.PlayerGames.FindAsync(id);
+            PlayerGame playerGame = db.PlayerGames.Find(id);
             if (playerGame == null)
             {
                 return NotFound();
@@ -37,9 +36,9 @@ namespace JockeyGames.API.Controllers
             return Ok(playerGame);
         }
 
-        // PUT: api/PlayerGames/5
+        // PUT: api/PlayerGames1/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutPlayerGame(int id, PlayerGame playerGame)
+        public IHttpActionResult PutPlayerGame(int id, PlayerGame playerGame)
         {
             if (!ModelState.IsValid)
             {
@@ -55,7 +54,7 @@ namespace JockeyGames.API.Controllers
 
             try
             {
-                await db.SaveChangesAsync();
+                db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -72,9 +71,9 @@ namespace JockeyGames.API.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/PlayerGames
+        // POST: api/PlayerGames1
         [ResponseType(typeof(PlayerGame))]
-        public async Task<IHttpActionResult> PostPlayerGame(PlayerGame playerGame)
+        public IHttpActionResult PostPlayerGame(PlayerGame playerGame)
         {
             if (!ModelState.IsValid)
             {
@@ -82,23 +81,23 @@ namespace JockeyGames.API.Controllers
             }
 
             db.PlayerGames.Add(playerGame);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
 
             return CreatedAtRoute("DefaultApi", new { id = playerGame.Id }, playerGame);
         }
 
-        // DELETE: api/PlayerGames/5
+        // DELETE: api/PlayerGames1/5
         [ResponseType(typeof(PlayerGame))]
-        public async Task<IHttpActionResult> DeletePlayerGame(int id)
+        public IHttpActionResult DeletePlayerGame(int id)
         {
-            PlayerGame playerGame = await db.PlayerGames.FindAsync(id);
+            PlayerGame playerGame = db.PlayerGames.Find(id);
             if (playerGame == null)
             {
                 return NotFound();
             }
 
             db.PlayerGames.Remove(playerGame);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
 
             return Ok(playerGame);
         }
