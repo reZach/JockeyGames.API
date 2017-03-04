@@ -31,11 +31,11 @@ namespace JockeyGames.API.Migrations
                 .Index(t => t.Tournament_Id);
             
             CreateTable(
-                "dbo.Players",
+                "dbo.Tournaments",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(),
+                        Title = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -54,47 +54,29 @@ namespace JockeyGames.API.Migrations
                 .Index(t => t.PlayerId);
             
             CreateTable(
-                "dbo.Tournaments",
+                "dbo.Players",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Title = c.String(),
+                        Name = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "dbo.MatchPlayers",
-                c => new
-                    {
-                        Match_Id = c.Int(nullable: false),
-                        Player_Id = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => new { t.Match_Id, t.Player_Id })
-                .ForeignKey("dbo.Matches", t => t.Match_Id, cascadeDelete: true)
-                .ForeignKey("dbo.Players", t => t.Player_Id, cascadeDelete: true)
-                .Index(t => t.Match_Id)
-                .Index(t => t.Player_Id);
             
         }
         
         public override void Down()
         {
             DropForeignKey("dbo.PlayerGames", "GameId", "dbo.Games");
-            DropForeignKey("dbo.Matches", "Tournament_Id", "dbo.Tournaments");
-            DropForeignKey("dbo.MatchPlayers", "Player_Id", "dbo.Players");
-            DropForeignKey("dbo.MatchPlayers", "Match_Id", "dbo.Matches");
             DropForeignKey("dbo.PlayerGames", "PlayerId", "dbo.Players");
+            DropForeignKey("dbo.Matches", "Tournament_Id", "dbo.Tournaments");
             DropForeignKey("dbo.Games", "Match_Id", "dbo.Matches");
-            DropIndex("dbo.MatchPlayers", new[] { "Player_Id" });
-            DropIndex("dbo.MatchPlayers", new[] { "Match_Id" });
             DropIndex("dbo.PlayerGames", new[] { "PlayerId" });
             DropIndex("dbo.PlayerGames", new[] { "GameId" });
             DropIndex("dbo.Matches", new[] { "Tournament_Id" });
             DropIndex("dbo.Games", new[] { "Match_Id" });
-            DropTable("dbo.MatchPlayers");
-            DropTable("dbo.Tournaments");
-            DropTable("dbo.PlayerGames");
             DropTable("dbo.Players");
+            DropTable("dbo.PlayerGames");
+            DropTable("dbo.Tournaments");
             DropTable("dbo.Matches");
             DropTable("dbo.Games");
         }

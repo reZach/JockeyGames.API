@@ -1,6 +1,9 @@
 namespace JockeyGames.API.Migrations
 {
+    using JockeyGames.Models.PingPong;
+    using JockeyGames.Models.Shared;
     using System;
+    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
@@ -26,6 +29,40 @@ namespace JockeyGames.API.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+
+            /*context.Players.AddOrUpdate(
+                new Player
+                {
+                    Id = 1,
+                    Name = "test"
+                },
+                new Player
+                {
+                    Id = 2,
+                    Name = "test"
+                }
+            );
+
+            context.Matches.AddOrUpdate(
+                new Match
+                {
+                    Id = 1,
+                    DateTime = DateTime.Now,
+                    Players = new List<Player>()
+                    {
+                        new Player
+                        {
+                            Id = 1,
+                            Name = "test"
+                        },
+                        new Player
+                        {
+                            Id = 2,
+                            Name = "test"
+                        }
+                    }
+                }
+            );*/
         }
     }
 }

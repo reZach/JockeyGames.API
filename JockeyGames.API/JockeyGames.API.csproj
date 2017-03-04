@@ -173,9 +173,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201703041652114_Initial.cs" />
-    <Compile Include="Migrations\201703041652114_Initial.Designer.cs">
-      <DependentUpon>201703041652114_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201703041941355_Initial.cs" />
+    <Compile Include="Migrations\201703041941355_Initial.Designer.cs">
+      <DependentUpon>201703041941355_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\JockeyGamesAPIContext.cs" />
@@ -231,6 +231,11 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Players1\Create.cshtml" />
+    <Content Include="Views\Players1\Delete.cshtml" />
+    <Content Include="Views\Players1\Details.cshtml" />
+    <Content Include="Views\Players1\Edit.cshtml" />
+    <Content Include="Views\Players1\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\JockeyGames.Models\JockeyGames.Models\JockeyGames.Models.csproj">
@@ -247,8 +252,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201703041652114_Initial.resx">
-      <DependentUpon>201703041652114_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201703041941355_Initial.resx">
+      <DependentUpon>201703041941355_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

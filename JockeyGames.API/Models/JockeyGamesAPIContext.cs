@@ -29,7 +29,6 @@ namespace JockeyGames.API.Models
 
             // Matches
             modelBuilder.Entity<Match>().HasKey(m => m.Id).HasMany<Game>(m => m.Games).WithRequired(g => g.Match);
-            modelBuilder.Entity<Match>().HasMany<Player>(m => m.Players).WithMany(p => p.Matches);
 
             // Tournament
             modelBuilder.Entity<Tournament>().HasKey(t => t.Id).HasMany(t => t.Matches);
