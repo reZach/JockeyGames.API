@@ -1,4 +1,6 @@
-﻿using System;
+﻿using JockeyGames.Models.PingPong;
+using JockeyGames.Models.Shared;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -19,14 +21,28 @@ namespace JockeyGames.API.Models
         {
         }
 
-        public System.Data.Entity.DbSet<JockeyGames.Models.Shared.Player> Players { get; set; }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            // Playergame
+            modelBuilder.Entity<Player>().HasKey(p => p.Id).HasMany(p => p.PlayerGames).WithRequired(p => p.Player).HasForeignKey(p => p.PlayerId);
+            modelBuilder.Entity<Game>().HasKey(g => g.Id).HasMany(g => g.PlayerGames).WithRequired(g => g.Game).HasForeignKey(g => g.GameId);
 
-        public System.Data.Entity.DbSet<JockeyGames.Models.PingPong.PlayerGame> PlayerGames { get; set; }
+            // Matches
+            modelBuilder.Entity<Match>().HasKey(m => m.Id).HasMany<Game>(m => m.Games).WithRequired(g => g.Match);
+            modelBuilder.Entity<Match>().HasMany<Player>(m => m.Players).WithMany(p => p.Matches);
 
-        public System.Data.Entity.DbSet<JockeyGames.Models.PingPong.Game> Games { get; set; }
+            // Tournament
+            modelBuilder.Entity<Tournament>().HasKey(t => t.Id).HasMany(t => t.Matches);
+        }
 
-        public System.Data.Entity.DbSet<JockeyGames.Models.PingPong.Match> Matches { get; set; }
+        public DbSet<Player> Players { get; set; }
 
-        public System.Data.Entity.DbSet<JockeyGames.Models.PingPong.Tournament> Tournaments { get; set; }
+        public DbSet<PlayerGame> PlayerGames { get; set; }
+
+        public DbSet<Game> Games { get; set; }
+
+        public DbSet<Match> Matches { get; set; }
+
+        public DbSet<Tournament> Tournaments { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using JockeyGames.API.Models;
@@ -17,17 +18,17 @@ namespace JockeyGames.API.Controllers
     {
         private JockeyGamesAPIContext db = new JockeyGamesAPIContext();
 
-        // GET: api/Matches1
+        // GET: api/Matches
         public IQueryable<Match> GetMatches()
         {
             return db.Matches;
         }
 
-        // GET: api/Matches1/5
+        // GET: api/Matches/5
         [ResponseType(typeof(Match))]
-        public IHttpActionResult GetMatch(int id)
+        public async Task<IHttpActionResult> GetMatch(int id)
         {
-            Match match = db.Matches.Find(id);
+            Match match = await db.Matches.FindAsync(id);
             if (match == null)
             {
                 return NotFound();
@@ -36,9 +37,9 @@ namespace JockeyGames.API.Controllers
             return Ok(match);
         }
 
-        // PUT: api/Matches1/5
+        // PUT: api/Matches/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutMatch(int id, Match match)
+        public async Task<IHttpActionResult> PutMatch(int id, Match match)
         {
             if (!ModelState.IsValid)
             {
@@ -54,7 +55,7 @@ namespace JockeyGames.API.Controllers
 
             try
             {
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -71,9 +72,9 @@ namespace JockeyGames.API.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Matches1
+        // POST: api/Matches
         [ResponseType(typeof(Match))]
-        public IHttpActionResult PostMatch(Match match)
+        public async Task<IHttpActionResult> PostMatch(Match match)
         {
             if (!ModelState.IsValid)
             {
@@ -81,23 +82,23 @@ namespace JockeyGames.API.Controllers
             }
 
             db.Matches.Add(match);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return CreatedAtRoute("DefaultApi", new { id = match.Id }, match);
         }
 
-        // DELETE: api/Matches1/5
+        // DELETE: api/Matches/5
         [ResponseType(typeof(Match))]
-        public IHttpActionResult DeleteMatch(int id)
+        public async Task<IHttpActionResult> DeleteMatch(int id)
         {
-            Match match = db.Matches.Find(id);
+            Match match = await db.Matches.FindAsync(id);
             if (match == null)
             {
                 return NotFound();
             }
 
             db.Matches.Remove(match);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return Ok(match);
         }

@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using JockeyGames.API.Models;
@@ -17,17 +18,17 @@ namespace JockeyGames.API.Controllers
     {
         private JockeyGamesAPIContext db = new JockeyGamesAPIContext();
 
-        // GET: api/Tournaments1
+        // GET: api/Tournaments
         public IQueryable<Tournament> GetTournaments()
         {
             return db.Tournaments;
         }
 
-        // GET: api/Tournaments1/5
+        // GET: api/Tournaments/5
         [ResponseType(typeof(Tournament))]
-        public IHttpActionResult GetTournament(int id)
+        public async Task<IHttpActionResult> GetTournament(int id)
         {
-            Tournament tournament = db.Tournaments.Find(id);
+            Tournament tournament = await db.Tournaments.FindAsync(id);
             if (tournament == null)
             {
                 return NotFound();
@@ -36,9 +37,9 @@ namespace JockeyGames.API.Controllers
             return Ok(tournament);
         }
 
-        // PUT: api/Tournaments1/5
+        // PUT: api/Tournaments/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutTournament(int id, Tournament tournament)
+        public async Task<IHttpActionResult> PutTournament(int id, Tournament tournament)
         {
             if (!ModelState.IsValid)
             {
@@ -54,7 +55,7 @@ namespace JockeyGames.API.Controllers
 
             try
             {
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -71,9 +72,9 @@ namespace JockeyGames.API.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Tournaments1
+        // POST: api/Tournaments
         [ResponseType(typeof(Tournament))]
-        public IHttpActionResult PostTournament(Tournament tournament)
+        public async Task<IHttpActionResult> PostTournament(Tournament tournament)
         {
             if (!ModelState.IsValid)
             {
@@ -81,23 +82,23 @@ namespace JockeyGames.API.Controllers
             }
 
             db.Tournaments.Add(tournament);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return CreatedAtRoute("DefaultApi", new { id = tournament.Id }, tournament);
         }
 
-        // DELETE: api/Tournaments1/5
+        // DELETE: api/Tournaments/5
         [ResponseType(typeof(Tournament))]
-        public IHttpActionResult DeleteTournament(int id)
+        public async Task<IHttpActionResult> DeleteTournament(int id)
         {
-            Tournament tournament = db.Tournaments.Find(id);
+            Tournament tournament = await db.Tournaments.FindAsync(id);
             if (tournament == null)
             {
                 return NotFound();
             }
 
             db.Tournaments.Remove(tournament);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return Ok(tournament);
         }

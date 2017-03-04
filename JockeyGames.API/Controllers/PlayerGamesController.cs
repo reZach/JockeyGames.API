@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using JockeyGames.API.Models;
@@ -17,17 +18,17 @@ namespace JockeyGames.API.Controllers
     {
         private JockeyGamesAPIContext db = new JockeyGamesAPIContext();
 
-        // GET: api/PlayerGames1
+        // GET: api/PlayerGames
         public IQueryable<PlayerGame> GetPlayerGames()
         {
             return db.PlayerGames;
         }
 
-        // GET: api/PlayerGames1/5
+        // GET: api/PlayerGames/5
         [ResponseType(typeof(PlayerGame))]
-        public IHttpActionResult GetPlayerGame(int id)
+        public async Task<IHttpActionResult> GetPlayerGame(int id)
         {
-            PlayerGame playerGame = db.PlayerGames.Find(id);
+            PlayerGame playerGame = await db.PlayerGames.FindAsync(id);
             if (playerGame == null)
             {
                 return NotFound();
@@ -36,16 +37,16 @@ namespace JockeyGames.API.Controllers
             return Ok(playerGame);
         }
 
-        // PUT: api/PlayerGames1/5
+        // PUT: api/PlayerGames/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutPlayerGame(int id, PlayerGame playerGame)
+        public async Task<IHttpActionResult> PutPlayerGame(int id, PlayerGame playerGame)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != playerGame.Id)
+            if (id != playerGame.GameId)
             {
                 return BadRequest();
             }
@@ -54,7 +55,7 @@ namespace JockeyGames.API.Controllers
 
             try
             {
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -71,9 +72,9 @@ namespace JockeyGames.API.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/PlayerGames1
+        // POST: api/PlayerGames
         [ResponseType(typeof(PlayerGame))]
-        public IHttpActionResult PostPlayerGame(PlayerGame playerGame)
+        public async Task<IHttpActionResult> PostPlayerGame(PlayerGame playerGame)
         {
             if (!ModelState.IsValid)
             {
@@ -81,23 +82,38 @@ namespace JockeyGames.API.Controllers
             }
 
             db.PlayerGames.Add(playerGame);
-            db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = playerGame.Id }, playerGame);
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (PlayerGameExists(playerGame.GameId))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtRoute("DefaultApi", new { id = playerGame.GameId }, playerGame);
         }
 
-        // DELETE: api/PlayerGames1/5
+        // DELETE: api/PlayerGames/5
         [ResponseType(typeof(PlayerGame))]
-        public IHttpActionResult DeletePlayerGame(int id)
+        public async Task<IHttpActionResult> DeletePlayerGame(int id)
         {
-            PlayerGame playerGame = db.PlayerGames.Find(id);
+            PlayerGame playerGame = await db.PlayerGames.FindAsync(id);
             if (playerGame == null)
             {
                 return NotFound();
             }
 
             db.PlayerGames.Remove(playerGame);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return Ok(playerGame);
         }
@@ -113,7 +129,7 @@ namespace JockeyGames.API.Controllers
 
         private bool PlayerGameExists(int id)
         {
-            return db.PlayerGames.Count(e => e.Id == id) > 0;
+            return db.PlayerGames.Count(e => e.GameId == id) > 0;
         }
     }
 }
