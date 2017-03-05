@@ -15,7 +15,7 @@ namespace JockeyGames.API
             // Web API routes
             config.MapHttpAttributeRoutes();
 
-            config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Always;
+            //config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Always;
 
             // Return results as json
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.MediaTypeMappings
