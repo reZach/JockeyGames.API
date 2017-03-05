@@ -11,6 +11,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using JockeyGames.API.Models;
 using JockeyGames.Models.PingPong;
+using JockeyGames.Models.DTOs;
 
 namespace JockeyGames.API.Controllers
 {
@@ -19,13 +20,20 @@ namespace JockeyGames.API.Controllers
         private JockeyGamesAPIContext db = new JockeyGamesAPIContext();
 
         // GET: api/Players
-        public IQueryable<Player> GetPlayers()
+        public IQueryable<PlayerDTO> GetPlayers()
         {
-            return db.Players;
+            var query = (from p in db.Players
+                         select new PlayerDTO
+                         {
+                             Id = p.Id,
+                             Name = p.Name
+                         });
+
+            return query;
         }
 
         // GET: api/Players/5
-        [ResponseType(typeof(Player))]
+        [ResponseType(typeof(PlayerDTO))]
         public async Task<IHttpActionResult> GetPlayer(int id)
         {
             Player player = await db.Players.FindAsync(id);
@@ -34,22 +42,34 @@ namespace JockeyGames.API.Controllers
                 return NotFound();
             }
 
-            return Ok(player);
+            PlayerDTO playerDTO = new PlayerDTO
+            {
+                Id = player.Id,
+                Name = player.Name
+            };
+
+            return Ok(playerDTO);
         }
 
         // PUT: api/Players/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutPlayer(int id, Player player)
+        public async Task<IHttpActionResult> PutPlayer(int id, PlayerDTO playerDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != player.Id)
+            if (id != playerDTO.Id)
             {
                 return BadRequest();
             }
+
+            Player player = new Player
+            {
+                Id = playerDTO.Id,
+                Name = playerDTO.Name
+            };
 
             db.Entry(player).State = EntityState.Modified;
 
@@ -73,22 +93,28 @@ namespace JockeyGames.API.Controllers
         }
 
         // POST: api/Players
-        [ResponseType(typeof(Player))]
-        public async Task<IHttpActionResult> PostPlayer(Player player)
+        [ResponseType(typeof(PlayerDTO))]
+        public async Task<IHttpActionResult> PostPlayer(PlayerDTO playerDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            Player player = new Player
+            {
+                Id = playerDTO.Id,
+                Name = playerDTO.Name
+            };
+
             db.Players.Add(player);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = player.Id }, player);
+            return CreatedAtRoute("DefaultApi", new { id = playerDTO.Id }, playerDTO);
         }
 
         // DELETE: api/Players/5
-        [ResponseType(typeof(Player))]
+        [ResponseType(typeof(PlayerDTO))]
         public async Task<IHttpActionResult> DeletePlayer(int id)
         {
             Player player = await db.Players.FindAsync(id);
@@ -97,10 +123,16 @@ namespace JockeyGames.API.Controllers
                 return NotFound();
             }
 
+            PlayerDTO playerDTO = new PlayerDTO
+            {
+                Id = player.Id,
+                Name = player.Name
+            };
+
             db.Players.Remove(player);
             await db.SaveChangesAsync();
 
-            return Ok(player);
+            return Ok(playerDTO);
         }
 
         protected override void Dispose(bool disposing)

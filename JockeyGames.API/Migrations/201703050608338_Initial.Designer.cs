@@ -13,7 +13,7 @@ namespace JockeyGames.API.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201703050337087_Initial"; }
+            get { return "201703050608338_Initial"; }
         }
         
         string IMigrationMetadata.Source
