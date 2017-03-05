@@ -1,12 +1,6 @@
 namespace JockeyGames.API.Migrations
 {
-    using JockeyGames.Models.PingPong;
-    using JockeyGames.Models.Shared;
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
-    using System.Linq;
 
     internal sealed class Configuration : DbMigrationsConfiguration<JockeyGames.API.Models.JockeyGamesAPIContext>
     {
